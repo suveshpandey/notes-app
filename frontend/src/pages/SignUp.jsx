@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import PasswordInput from '../components/Passwordinput';
 import {validateEmail} from '../utils/helper.js';
 
@@ -7,10 +7,13 @@ import {validateEmail} from '../utils/helper.js';
 const Signup = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [name, setName] = useState("");
+    const [username, setuserName] = useState("");
     const [error, setError] = useState(null);
 
-    const handleSubmit = (e) =>{
+
+    const navigate = useNavigate();
+
+    const handleSubmit = async (e) =>{
         e.preventDefault();
 
         if(!validateEmail(email)){
@@ -21,11 +24,32 @@ const Signup = () => {
             setError("Please enter the password.");
             return;
         }
-        if(!name){
+        if(!username){
             setError("Please enter your name")
             return;
         }
         setError("");
+        //sign-up api call
+        try{
+            const response = await fetch("http://localhost:3000/user/signup", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    email, password, username
+                })
+            });
+            if(response.ok){
+                console.log("response: ", response);
+                alert("sign-up done!");
+                navigate("/login");
+            }
+        }
+        catch(error){
+            console.log("error: ", error.message);
+            alert("Couldn't sign-up")
+        }
     }
     return (
         <div className='h-[100%] w-[100%] flex items-center justify-center '>
@@ -51,8 +75,8 @@ const Signup = () => {
                     <input 
                     type="text" 
                     placeholder='Name'
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
+                    value={username}
+                    onChange={(e) => setuserName(e.target.value)}
                     className='h-[40px] w-[100%] outline-none rounded px-3 mb-3 text-[#1d2d44] text-lg border-[1px] border-[#1d2d44] border-opacity-30 hover:border-opacity-70  transition-all duration-200 ' />
                     
 

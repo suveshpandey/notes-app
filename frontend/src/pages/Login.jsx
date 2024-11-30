@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import {Link} from 'react-router-dom';
+import {Link, useNavigate} from 'react-router-dom';
 import PasswordInput from '../components/Passwordinput';
 import {validateEmail} from '../utils/helper.js';
 
@@ -8,6 +8,7 @@ const Login = () => {
     const [password, setPassword] = useState("");
     const [error, setError] = useState(null);
 
+    const navigate = useNavigate();
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -22,6 +23,19 @@ const Login = () => {
         setError("");
 
         // login api call
+        const response = await fetch("http://localhost:3000/user/signin", {
+            method: "POST",
+            headers: {
+                body: JSON.stringify({
+                    email, password
+                })
+            }
+        });
+        if(response.ok){
+            console.log("response: ", response);
+            alert("sign-in done!");
+            navigate("/dashboard");
+        }
     }
     
     return (
