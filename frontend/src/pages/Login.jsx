@@ -9,6 +9,7 @@ const Login = () => {
     const [error, setError] = useState(null);
 
     const navigate = useNavigate();
+    
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -23,18 +24,24 @@ const Login = () => {
         setError("");
 
         // login api call
-        const response = await fetch("http://localhost:3000/user/signin", {
-            method: "POST",
-            headers: {
-                body: JSON.stringify({
-                    email, password
-                })
+        try{
+            const response = await fetch("http://localhost:3000/user/signin", {
+                method: "POST",
+                headers: {
+                    body: JSON.stringify({
+                        email, password
+                    })
+                }
+            });
+            if(response.ok){
+                console.log("response: ", response);
+                alert("sign-in done!");
+                navigate("/dashboard");
             }
-        });
-        if(response.ok){
-            console.log("response: ", response);
-            alert("sign-in done!");
-            navigate("/dashboard");
+        }
+        catch(error){
+            console.log("error: ", error.message);
+            alert("Couldn't sign-in")
         }
     }
     
