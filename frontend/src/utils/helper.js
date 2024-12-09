@@ -14,4 +14,8 @@ export const getInitials = (name) => {
     return initials;
 }
 
+export const getFirstName = (name) => {
+    return name.split(" ")[0];
+}
+
 // export default ;

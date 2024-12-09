@@ -3,7 +3,7 @@ import TagInput from './TagInput';
 
 import { RxCross2 } from "react-icons/rx";
 
-const AddEditNotes = ({ onClose, onSave, initialData }) => {
+const AddEditNotes = ({ onClose, onSave, initialData, fetchNotes }) => {
     const [title, setTitle] = useState("");
     const [content, setContent] = useState("");
     const [tags, setTags] = useState([]);
@@ -26,22 +26,47 @@ const AddEditNotes = ({ onClose, onSave, initialData }) => {
     
     
     // Save handler
-    const handleSave = () => {
-        if (!title || !content) {
-            alert("Title and content cannot be empty!");
+    const handleSave = async () => {
+        if(!title || !content){
+            alert("Title and content cannot be empty");
             return;
         }
-
-        const newNote = {
+        const noteData = {
             title,
             content,
             tags: Array.isArray(tags) ? tags : [],
             date: new Date().toLocaleDateString(),
         };
 
-        onSave(newNote); // Send the new note back to Home
-        onClose(); // Close the modal
-    };
+        const endpoint = initialData ? "update-note" : "add-new-note";
+        const method = initialData ? "PUT" : "POST";
+
+        try{
+            const response = await fetch(`http://localhost:3000/user/${endpoint}`, {
+                method,
+                headers: {
+                    "Content-Type" : "application/json",
+                    token: localStorage.getItem("token"),
+                },
+                body: JSON.stringify(
+                    initialData ? {noteId: initialData._id, ...noteData} : noteData
+                ),
+            });
+            const data = await response.json();
+            if(response.ok){
+                fetchNotes();
+                onClose();
+            }
+            else{
+                alert(data.message || "Failed to save the note.");
+            }
+        }
+        catch(error){
+            console.log("Error while saving the note.", error.message);
+            alert(data.message || "An error occurred while saving the note.");
+        }
+    }
+
 
     return (
         <div className='relative'>
@@ -83,7 +108,7 @@ const AddEditNotes = ({ onClose, onSave, initialData }) => {
                 <button
                     onClick={handleSave}
                     className='w-[100%] py-2 bg-blue-600 rounded-sm text-white font-semibold hover:bg-blue-700 transition-all duration-200'>
-                    ADD
+                    {initialData ? "EDIT" : "ADD"}
                 </button>
             </div>
         </div>

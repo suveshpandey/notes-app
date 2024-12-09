@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Navbar from '../components/Navbar';
 import NoteCard from '../components/NoteCard';
 import AddEditNotes from '../components/AddEditNotes';
@@ -8,29 +8,137 @@ import Modal from 'react-modal';
 
 Modal.setAppElement('#root');
 
-const Home = () => {
+const Home = ({username, email, password, setUsername, setEmail, setPassword}) => {
     const [notes, setNotes] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
     const [openAddEditModel, setOpenEditModel] = useState({
         isShown: false,
         type: "add",
         data: null,
         index: null,
     });
+    const handlePinNote = async (noteId) => {
+        try{
+            const token = localStorage.getItem("token");
+
+            const response = await fetch("http://localhost:3000/user/pin-note", {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                    "token": token
+                },
+                body: JSON.stringify({noteId})
+            })
+            const data = response.json();
+            if(response.ok){
+                const updatedNotes = notes.map((note) =>
+                    note._id === noteId ? { ...note, isPinned: !note.isPinned } : note
+                );
+                setNotes(updatedNotes);
+                console.log(updatedNotes)
+                console.log("note pinnded/unpinned successfully.");
+                fetchNotes();
+            }
+            else{
+                console.log(data.message);
+            }
+        }
+        catch(error){
+            console.log(error.message);
+        }
+    }
+    const fetchNotes = async () => {
+        try {
+            const token = localStorage.getItem("token"); // Retrieve the token from localStorage
+            const response = await fetch("http://localhost:3000/user/get-notes", {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    "token": token,
+                },
+            });
+    
+            const data = await response.json(); // Parse the JSON response
+            if (response.ok) {
+                // Sort the notes array: pinned notes first
+                const sortedNotes = data.notes.sort((a, b) => b.isPinned - a.isPinned);
+                setNotes(sortedNotes); // Update state with sorted notes
+            } else {
+                setError(data.message || "Failed to fetch notes."); // Handle errors from the API
+            }
+        } catch (error) {
+            setError(error.message); // Catch any network or parsing errors
+        } finally {
+            setLoading(false); // Set loading to false after operation completes
+        }
+    };
+    
+    useEffect(()=>{
+        fetchNotes();
+    }, [])
 
     const handleAddNote = (newNote) => {
         setNotes((prevNotes) => [...prevNotes, newNote]);
     };
 
-    const handleDeleteNote = (indexToDelete) => {
-        setNotes((prevNotes) => prevNotes.filter((_, index) => index !== indexToDelete));
+    const handleDeleteNote = async (noteId) => {
+        try{
+            const token = localStorage.getItem("token");
+            const response = await fetch("http://localhost:3000/user/delete-note", {
+                method: "DELETE",
+                headers: {
+                    "Content-Type" : "application/json",
+                    "token": token
+                },
+                body: JSON.stringify({noteId}),
+            });
+            if(response.ok){
+                setNotes((prevNotes) => prevNotes.filter((note) => note._id !== noteId));
+            }
+            else{
+                const data = await response.json();
+                setError(data.message || "Failed to delte the note.");
+            }
+        }
+        catch(error){
+            setError(error.message);
+        }
     };
 
-    const handleEditNote = (updatedNote, index) => {
-        setNotes((prevNotes) => {
-            const updatedNotes = [...prevNotes];
-            updatedNotes[index] = updatedNote;
-            return updatedNotes;
-        });
+    const handleEditNote = async (updatedNote) => {
+        try {
+            const token = localStorage.getItem("token");
+            const response = await fetch("http://localhost:3000/user/update-note", {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                    "token": token,
+                },
+                body: JSON.stringify({ 
+                    noteId: updatedNote._id, // Explicitly include the noteId
+                    title: updatedNote.title,
+                    content: updatedNote.content,
+                    tags: updatedNote.tags,
+                }),
+            });
+            if (response.ok) {
+                const updatedNoteFromBackend = await response.json();
+                console.log("updated note: ", updatedNoteFromBackend)
+                setNotes((prevNotes) => {
+                    prevNotes.map((note) =>
+                        note._id === updatedNoteFromBackend._id ? updatedNoteFromBackend : note
+                    )
+                });
+            } 
+            else {
+                const data = await response.json();
+                setError(data.message || "Failed to update the note.");
+            }
+        } 
+        catch (error) {
+            setError(error.message);
+        }
     };
 
     const onEdit = (note, index) => {
@@ -45,27 +153,32 @@ const Home = () => {
     const handleSave = (note) => {
         if (openAddEditModel.type === "add") {
             handleAddNote(note);
-        } else if (openAddEditModel.type === "edit") {
-            handleEditNote(note, openAddEditModel.index);
+        } 
+        else if (openAddEditModel.type === "edit") {
+            handleEditNote(note);
         }
         setOpenEditModel({ isShown: false, type: "add", data: null, index: null });
     };
+    if(loading) return <div>Loading notes...</div>;
+    if(error) return <div>Error: {error}</div>
 
     return (
         <div className="h-[100vh] flex">
-            <Navbar />
+            <Navbar notes={notes} email={email} setEmail={setEmail} password={password} setPassword={setPassword} username={username} setUsername={setUsername} notesLength={notes.length} />
 
-            <div className="w-[100%] sm:p-10 sm:px-10 sm:mt-10 mt-14 flex flex-wrap justify-center gap-x-16 overflow-y-auto">
+            <div className="w-[100%] sm:p-10 sm:px-10 sm:mt-10 mt-16 pb-16 flex flex-col sm:flex-row sm:flex-wrap sm:justify-center justify-start sm:items-start items-center gap-x-16 overflow-y-auto">
                 {notes.length > 0 ? (
-                    notes.map((note, index) => (
+                    notes.map((note) => (
                         <NoteCard
-                            key={index}
+                            key={note._id}
                             title={note.title}
                             date={note.date}
                             content={note.content}
                             tags={note.tags}
-                            onDelete={() => handleDeleteNote(index)}
-                            onEdit={() => onEdit(note, index)}
+                            onDelete={() => handleDeleteNote(note._id)}
+                            onEdit={() => onEdit(note)}
+                            isPinnded={note.isPinned}
+                            handlePinNote={() => handlePinNote(note._id)}
                         />
                     ))
                 ) : (
@@ -94,6 +207,7 @@ const Home = () => {
                     onClose={() => setOpenEditModel({ isShown: false })}
                     onSave={handleSave}
                     initialData={openAddEditModel.data}
+                    fetchNotes={fetchNotes}
                 />
             </Modal>
         </div>

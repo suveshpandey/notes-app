@@ -1,15 +1,14 @@
 import React, { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom';
+import {Link, useNavigate} from 'react-router-dom';
 import PasswordInput from '../components/Passwordinput';
 import {validateEmail} from '../utils/helper.js';
 
 
-const Signup = ({username, setUsername, email, setEmail, password, setPassword}) => {
-    const [error, setError] = useState(null);
-    
-    const navigate = useNavigate();
+const ChangePass = ({email, setEmail, password, setPassword}) => {
+    const [error, setError] = useState("");
 
-    const handleSubmit = async (e) =>{
+    const navigate = useNavigate();
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
         if(!validateEmail(email)){
@@ -20,36 +19,29 @@ const Signup = ({username, setUsername, email, setEmail, password, setPassword})
             setError("Please enter the password.");
             return;
         }
-        if(!username){
-            setError("Please enter your name")
-            return;
-        }
         setError("");
-        
-        //sign-up api call
+
         try{
-            const response = await fetch("http://localhost:3000/user/signup", {
-                method: "POST",
+            const response = await fetch("http://localhost:3000/user/change-password", {
+                method: "PUT",
                 headers: {
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify({
-                    email, password, username
-                })
+                body: JSON.stringify({email, "newPassword": password})
             });
+            const data = await response.json();
             if(response.ok){
-                console.log("response: ", response);
-                alert("A verification code is send to you email.");
-                navigate("/verification");
+                localStorage.setItem("token", data.token);
+                localStorage.setItem("email",data.email);
+                alert("Password changed successfullly.");
+                navigate("/dashboard");
             }
-            else if(response.status == 401){
-                setError("Email already exists, Please login.")
-                return;
+            else{
+                setError(data.message || "Failed to change password.");
             }
         }
         catch(error){
             console.log("error: ", error.message);
-            alert("Couldn't sign-up")
         }
     }
     return (
@@ -59,7 +51,7 @@ const Signup = ({username, setUsername, email, setEmail, password, setPassword})
                 action=""
                 onSubmit={handleSubmit}
                 className='w-[100%] h-[100%] flex flex-col p-5 transition-all duration-200 '>
-                    <h4 className='text-2xl font-bold text-[#1d2d44] mb-3 '>SignUp</h4>
+                    <h4 className='text-2xl font-bold text-[#1d2d44] mb-3 '>Change Password</h4>
                     
                     <input 
                     type="text" 
@@ -70,34 +62,28 @@ const Signup = ({username, setUsername, email, setEmail, password, setPassword})
                     
                     <PasswordInput 
                     value={password}
+                    placeholder={"New password"}
                     onChange={(e) => setPassword(e.target.value)}
                     />
 
-                    <input 
-                    type="text" 
-                    placeholder='Name'
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
-                    className='h-[40px] w-[100%] outline-none rounded px-3 mb-3 text-[#1d2d44] text-lg border-[1px] border-[#1d2d44] border-opacity-30 hover:border-opacity-70  transition-all duration-200 ' />
-                    
-
                     {error && <p className='text-red-600 mb-3'>{error}</p>}
                     
-                    <button
-                    type='submit' 
-                    className='h-[40px] w-[100%] text-[#f0ebd8] font-semibold rounded mb-2 bg-blue-500 hover:bg-blue-700 transition-all duration-200 '>SignUp</button>
+                    <button 
+                    type='submit'
+                    className='h-[40px] w-[100%] text-[#f0ebd8] font-semibold rounded mb-2 bg-blue-500 hover:bg-blue-700 transition-all duration-200 '>Change</button>
                     
                     <p 
-                    className='text-md  text-[#1d2d44] text-center '>Already have an account? 
+                    className='text-md  text-[#1d2d44] text-center '>Or
                     <Link 
-                    to="/login" 
-                    className='text-blue-600 underline'> Login
+                    to="/signup" 
+                    className='text-blue-600 underline'> Sign-up with another email.
                     </Link>
                     </p>
+                
                 </form>
             </div>
         </div>
     )
 }
 
-export default Signup;
+export default ChangePass

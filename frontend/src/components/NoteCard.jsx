@@ -1,8 +1,11 @@
 import React from 'react';
-import { MdPushPin, MdDelete } from "react-icons/md";
+import { MdDelete } from "react-icons/md";
+import { PiPushPinSimpleFill } from "react-icons/pi";
+import { PiPushPinSimpleSlashFill } from "react-icons/pi";
+
 import { RiEdit2Fill } from "react-icons/ri";
 
-const NoteCard = ({ title, date, content, tags, onEdit, onDelete }) => {
+const NoteCard = ({ title, date, content, tags, onEdit, onDelete, isPinnded, handlePinNote }) => {
     return (
         <div className="sm:w-[400px] w-[90%] h-[200px] flex flex-col bg-green-100 bg-opacity-20 p-3 rounded-md border-[1px] border-slate-300 shadow-sm hover:shadow-md hover:border-slate-400 transition-all duration-200 mb-5">
             {/* Header Section */}
@@ -12,7 +15,10 @@ const NoteCard = ({ title, date, content, tags, onEdit, onDelete }) => {
                     <div className="text-xs font-semibold opacity-50">{date}</div>
                 </div>
                 <div className="flex items-center justify-center">
-                    <MdPushPin className="text-blue-600 size-5 cursor-pointer" />
+                    {
+                        !isPinnded ? <PiPushPinSimpleFill className="text-blue-600 size-5 cursor-pointer" onClick={handlePinNote} />
+                        : <PiPushPinSimpleSlashFill className="text-blue-600 size-5 cursor-pointer" onClick={handlePinNote} />
+                    }
                 </div>
             </div>
             

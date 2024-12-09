@@ -3,13 +3,17 @@ import {Link, useNavigate} from 'react-router-dom';
 import PasswordInput from '../components/Passwordinput';
 import {validateEmail} from '../utils/helper.js';
 
-const Login = () => {
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
+const Login = ({username, setUsername, email, setEmail, password, setPassword}) => {
     const [error, setError] = useState(null);
+    const [newPassword, setNewPassword] = useState("");
+    const [isForgotPass, setIsForgotPass] = useState(false);
 
     const navigate = useNavigate();
-    
+
+    const handleForgotPass = () => {
+        setPassword("");
+        navigate('/change-pass');
+    }
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -28,20 +32,27 @@ const Login = () => {
             const response = await fetch("http://localhost:3000/user/signin", {
                 method: "POST",
                 headers: {
-                    body: JSON.stringify({
-                        email, password
-                    })
-                }
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({email, password})
             });
-            if(response.ok){
-                console.log("response: ", response);
-                alert("sign-in done!");
+            const data = await response.json();
+            if(response.ok && data.token){
+                setUsername(data.username);
+                localStorage.setItem("token",data.token);
+
+                localStorage.setItem("username",data.username);
+                localStorage.setItem("email",data.email);
+                alert("Sign-in successful!");
                 navigate("/dashboard");
+            }
+            else{
+                setError(data.message || "Failed to sign-in.");
             }
         }
         catch(error){
             console.log("error: ", error.message);
-            alert("Couldn't sign-in")
+            alert("Couldn't sign in. Please try again later.");
         }
     }
     
@@ -66,11 +77,19 @@ const Login = () => {
                     onChange={(e) => setPassword(e.target.value)}
                     />
 
+                    {isForgotPass && 
+                    <PasswordInput 
+                    value={newPassword}
+                    placeholder={"New Password"}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                    />}
+                    <p onClick={handleForgotPass} className='text-right  mb-1 opacity-50 hover:opacity-70 cursor-pointer'>forgot password?</p>
+
                     {error && <p className='text-red-600 mb-3'>{error}</p>}
                     
                     <button 
                     type='submit'
-                    className='h-[40px] w-[100%] text-[#f0ebd8] font-semibold rounded mb-2 bg-[#0077b6] hover:bg-[#1d2d44] transition-all duration-200 '>Login</button>
+                    className='h-[40px] w-[100%] text-[#f0ebd8] font-semibold rounded mb-2 bg-blue-500 hover:bg-blue-700 transition-all duration-200 '>Login</button>
                     
                     <p 
                     className='text-md  text-[#1d2d44] text-center '>Don't have an account? 
