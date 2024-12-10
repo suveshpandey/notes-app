@@ -221,6 +221,7 @@ userRouter.put('/change-password', async (req, res) => {
             JWT_SECRET,
             {expiresIn: '24h'}
         )
+        
         await user.save();
         res.status(200).json({message: "Password changed successfully.", token});
 
