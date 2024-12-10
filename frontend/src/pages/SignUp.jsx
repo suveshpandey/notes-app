@@ -1,11 +1,15 @@
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom';
 import PasswordInput from '../components/Passwordinput';
-import {validateEmail} from '../utils/helper.js';
+import {url, validateEmail} from '../utils/helper.js';
+import NavbarForSignupin from '../components/NavbarForSignupin.jsx';
+import LoadingBar from '../components/Loader.jsx';
 
 
 const Signup = ({username, setUsername, email, setEmail, password, setPassword}) => {
     const [error, setError] = useState(null);
+    const [loader, setLoader] = useState(false);
+    const [message, setMessage] = useState("");
     
     const navigate = useNavigate();
 
@@ -28,7 +32,7 @@ const Signup = ({username, setUsername, email, setEmail, password, setPassword})
         
         //sign-up api call
         try{
-            const response = await fetch("http://localhost:3000/user/signup", {
+            const response = await fetch(`${url}/signup`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -39,8 +43,12 @@ const Signup = ({username, setUsername, email, setEmail, password, setPassword})
             });
             if(response.ok){
                 console.log("response: ", response);
-                alert("A verification code is send to you email.");
-                navigate("/verification");
+                setMessage("A verification code is sent to you email.");
+                setLoader(true);
+                setTimeout(() => {
+                    setLoader(false);
+                    navigate("/verification");
+                }, 5000);
             }
             else if(response.status == 401){
                 setError("Email already exists, Please login.")
@@ -53,8 +61,10 @@ const Signup = ({username, setUsername, email, setEmail, password, setPassword})
         }
     }
     return (
-        <div className='h-[100%] w-[100%] flex items-center justify-center '>
-            <div className='h-auto w-[400px]  bg-opacity-20 rounded-md  border-[1px] border-[#748cab] border-opacity-200 '>
+        <div className="h-[100%] w-[100%] flex items-center justify-center ">
+            <NavbarForSignupin />
+            {loader && <LoadingBar message={message} />}
+            <div className="h-auto w-[400px]  bg-opacity-20 rounded-md  border-[1px] border-[#748cab] border-opacity-200 ">
                 <form 
                 action=""
                 onSubmit={handleSubmit}

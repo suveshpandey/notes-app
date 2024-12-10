@@ -6,8 +6,8 @@ const sendVerificationCode = async (email, verificationCode) => {
             from: '"Suvesh Pandey" <jpusvesh29@gmail.com>', // sender address
             to: email, // list of receivers
             subject: "Verify your email ✔", // Subject line
-            text: "Verify your email.", // plain text body
-            html: verificationCode, // html body
+            text: `Your verification code is: ${verificationCode}`, // plain text body
+            html: `<h1>Verification Code</h1><p>Your verification code is: <strong>${verificationCode}</strong></p>`, // html body
         });
         console.log("Email sent successfully.", response);
     }

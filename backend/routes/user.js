@@ -59,27 +59,59 @@ userRouter.post('/verify-user', async (req, res) => {
         res.status(500).json({ message: "Error verifying user.", error: error.message });
     }
 });
+// userRouter.post('/signin', async (req, res) => {
+//     const {email, password} = req.body;
+//     try{
+//         const user = await userModel.findOne({email});
+//         if(user && await bcrypt.compare(password, user.password)){
+//             const token = jwt.sign(
+//                 {id: user._id},
+//                 JWT_SECRET,
+//                 {expiresIn: '24h'}
+//             )
+//             console.log("token: ", token);
+//             return res.status(200).json({
+//                 message: "User successfully signed-in", 
+//                 email: email,
+//                 username: user.username,
+//                 token: token
+//             });
+//         }
+//         else{
+//             return res.status(401).json({message: "Wrong credentials"});
+//         }
+//     }
+//     catch(error){
+//         res.status(500).json({message: "Error occured while signing-in", error: error.message});
+//     }
+// })
 userRouter.post('/signin', async (req, res) => {
     const {email, password} = req.body;
     try{
         const user = await userModel.findOne({email});
-        if(user && await bcrypt.compare(password, user.password)){
-            const token = jwt.sign(
-                {id: user._id},
-                JWT_SECRET,
-                {expiresIn: '24h'}
-            )
-            console.log("token: ", token);
-            return res.status(200).json({
-                message: "User successfully signed-in", 
-                email: email,
-                username: user.username,
-                token: token
-            });
+        if(user && user.isVerified){
+            if(user && await bcrypt.compare(password, user.password)){
+                const token = jwt.sign(
+                    {id: user._id},
+                    JWT_SECRET,
+                    {expiresIn: '24h'}
+                )
+                console.log("token: ", token);
+                return res.status(200).json({
+                    message: "User successfully signed-in",
+                    email: email,
+                    username: user.username,
+                    token: token
+                });
+            }
+            else{
+                return res.status(401).json({message: "Wrong credentials"});
+            }
         }
         else{
-            return res.status(401).json({message: "Wrong credentials"});
+            return res.status(401).json({message: "The email is not verified, can't sign-in"});
         }
+        
     }
     catch(error){
         res.status(500).json({message: "Error occured while signing-in", error: error.message});

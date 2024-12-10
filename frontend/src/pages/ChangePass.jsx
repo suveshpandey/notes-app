@@ -1,7 +1,8 @@
 import React, { useState } from 'react'
 import {Link, useNavigate} from 'react-router-dom';
 import PasswordInput from '../components/Passwordinput';
-import {validateEmail} from '../utils/helper.js';
+import {url, validateEmail} from '../utils/helper.js';
+import NavbarForSignupin from '../components/NavbarForSignupin.jsx';
 
 
 const ChangePass = ({email, setEmail, password, setPassword}) => {
@@ -22,7 +23,7 @@ const ChangePass = ({email, setEmail, password, setPassword}) => {
         setError("");
 
         try{
-            const response = await fetch("http://localhost:3000/user/change-password", {
+            const response = await fetch(`${url}/change-password`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json"
@@ -46,6 +47,7 @@ const ChangePass = ({email, setEmail, password, setPassword}) => {
     }
     return (
         <div className='h-[100%] w-[100%] flex items-center justify-center '>
+            <NavbarForSignupin />
             <div className='h-auto w-[400px]  bg-opacity-20 rounded-md  border-[1px] border-[#748cab] border-opacity-200 '>
                 <form 
                 action=""

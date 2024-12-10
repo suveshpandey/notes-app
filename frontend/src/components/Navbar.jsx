@@ -9,8 +9,8 @@ import { TbLogout } from "react-icons/tb";
 import { RxCross2 } from "react-icons/rx";
 
 
-const Navbar = ({notes, username, email, password, setEmail, setPassword, setUsername, notesLength}) => {
-    const [searchQuery, setSearchQuery] = useState("");
+const Navbar = ({notes, username, email, password, setEmail, setPassword, setUsername, notesLength, setSearchQuery}) => {
+    const [searchQueryLocal, setSearchQueryLocal] = useState("");
     const [isModelOpen, setIsModelOpen] = useState(false);
 
     const usernameFromLocalStorage = localStorage.getItem("username");
@@ -19,11 +19,12 @@ const Navbar = ({notes, username, email, password, setEmail, setPassword, setUse
     const navigate = useNavigate();
 
     const handleSearch = () => {
-        console.log("search button clicked.")
+        setSearchQuery(searchQueryLocal);
     };
     const onClearSearch = () => {
-        setSearchQuery("");
-    }
+        setSearchQuery('');
+        setSearchQueryLocal('');
+    };
     const handleOpenModel = () =>{
         setIsModelOpen(true);
     }
@@ -50,13 +51,15 @@ const Navbar = ({notes, username, email, password, setEmail, setPassword, setUse
     return (
         <div>
             <div className='bg-[#eaf4f4] w-[100%] h-[50px] fixed flex items-center justify-between sm:px-20 px-2 py-1 top-0 z-10 '>
-                <div className='font-bold text-lg bg-gradient-to-r from-[#1d2d44] to-[#3e5c76] bg-clip-text text-transparent  '>NeuraNotes</div>
+                <div className='flex justify-center items-center font-bold text-lg bg-gradient-to-r from-[#1d2d44] to-[#3e5c76] bg-clip-text text-transparent  '>
+                    <img className='size-6 mr-1' src="../public/notes-icon.png" alt="" />
+                    <p>NeuraNotes</p>
+                </div>
                 
                 <SearchBar 
-                value={searchQuery} 
+                value={searchQueryLocal} 
                 onChange={({target}) => {
-                    setSearchQuery(target.value);
-                    handleSearch();
+                    setSearchQueryLocal(target.value);
                 }} 
                 handleSearch={handleSearch} 
                 onClearSearch={onClearSearch} 
@@ -64,7 +67,7 @@ const Navbar = ({notes, username, email, password, setEmail, setPassword, setUse
 
                 <div 
                 onClick={handleOpenModel}
-                className='bg-slate-300 hover:bg-gray-300 sm:size-10 size-8 flex items-center justify-center rounded-full my-1 font-semibold cursor-pointer '>
+                className='bg-slate-300 hover:bg-gray-300 sm:size-10 size-8 text-xs sm:text-base flex items-center justify-center rounded-full my-1 font-semibold cursor-pointer '>
                 {getInitials(username || usernameFromLocalStorage).toUpperCase()}
                 </div>
             </div>
@@ -80,7 +83,7 @@ const Navbar = ({notes, username, email, password, setEmail, setPassword, setUse
             }}
             className={"lg:w-[40%] w-[95%] sm:h-3/4 h-3/5 mx-auto  mt-16 bg-[#eef4ed] rounded-md p-6  transition-all duration-200"}
             >
-                <div className='flex flex-col relative'>
+                <div className='flex flex-col relative h-full'>
                     <button
                     onClick={handleCloseModel}
                     className='absolute right-2'>
@@ -103,8 +106,10 @@ const Navbar = ({notes, username, email, password, setEmail, setPassword, setUse
                         onClick={handleLogout}
                         className='h-[30px] w-[30%] mt-10 text-white rounded-md flex justify-center items-center bg-gradient-to-r from-[#6d7293] to-[#7c98b3] transition-all duration-200 '>Logout <TbLogout className='ml-1' /> </button>
                     </div>
+                    <div className='mt-auto flex justify-center items-center pb-4'>
+                        <p className="text-sm text-gray-500">Designed and developed by <span className='text-blue-500'>"Suvesh Pandey" </span></p>
+                    </div>
                 </div>
-
             </Modal>
         </div>
         

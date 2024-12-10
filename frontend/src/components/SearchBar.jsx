@@ -11,7 +11,18 @@ const SearchBar = ({value, onChange, handleSearch, onClearSearch}) => {
             placeholder='Search Notes'
             className='h-[100%] w-[100%] rounded-md outline-none  '
             value={value}
-            onChange={onChange}
+            // onChange={onChange}
+            onChange={(e) => {
+                onChange(e); // Pass the value to parent for handling
+                if (e.target.value === '') {
+                    handleSearch(); // Reset the notes when the search query is cleared
+                }
+            }}
+            onKeyDown={(event) => {
+                if (event.key === "Enter") {
+                  handleSearch(); // Call the search function when Enter is pressed
+                }
+            }}
             />
             {value && <RxCross2 onClick={onClearSearch} className='size-5 cursor-pointer mr-1 hover:text-slate-800 transition-all duration-300 ' />}
             <IoMdSearch onClick={handleSearch} className='size-5 cursor-pointer hover:text-slate-800 transition-all duration-300 ' />

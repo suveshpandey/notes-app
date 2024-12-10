@@ -1,10 +1,16 @@
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom';
+import NavbarForSignupin from '../components/NavbarForSignupin';
+import { url } from '../utils/helper';
+import LoadingBar from '../components/Loader';
 
 
 const Verification = () => {
     const [verificationCode, setVerificationCode] = useState("");
     const [error, setError] = useState(null);
+
+    const [loader, setLoader] = useState(false);
+    const [message, setMessage] = useState("");
 
     const navigate = useNavigate();
 
@@ -18,7 +24,7 @@ const Verification = () => {
         setError("");
 
         try{
-            const response = await fetch("http://localhost:3000/user/verify-user", {
+            const response = await fetch(`${url}/verify-user`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -27,11 +33,15 @@ const Verification = () => {
             })
             const data = await response.json();
             if(response.ok){
-                alert("email verified.");
-                navigate("/login");
+                setLoader(true);
+                setMessage("Email Verified Successfully ✔");
+                setTimeout(() => {
+                    setLoader(false);
+                    navigate("/login");
+                }, 4000);
             }
             else if(response.status == 404){
-                setError("Either email or code is wrong.");
+                setError("Either email or verification code is wrong.");
             }
             else{
                 setError("Failed to verify.");
@@ -44,6 +54,8 @@ const Verification = () => {
     }
     return (
         <div className='h-[100%] w-[100%] flex items-center justify-center '>
+            <NavbarForSignupin />
+            {loader && <LoadingBar message={message} />}
             <div className='h-auto w-[400px]  bg-opacity-20 rounded-md  border-[1px] border-[#748cab] border-opacity-200 '>
                 <form 
                 action=""

@@ -5,6 +5,7 @@ import AddEditNotes from '../components/AddEditNotes';
 
 import { MdAdd } from "react-icons/md";
 import Modal from 'react-modal';
+import { url } from '../utils/helper';
 
 Modal.setAppElement('#root');
 
@@ -12,6 +13,7 @@ const Home = ({username, email, password, setUsername, setEmail, setPassword}) =
     const [notes, setNotes] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [searchQuery, setSearchQuery]= useState("");
     const [openAddEditModel, setOpenEditModel] = useState({
         isShown: false,
         type: "add",
@@ -22,7 +24,7 @@ const Home = ({username, email, password, setUsername, setEmail, setPassword}) =
         try{
             const token = localStorage.getItem("token");
 
-            const response = await fetch("http://localhost:3000/user/pin-note", {
+            const response = await fetch(`${url}/pin-note`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
@@ -51,7 +53,7 @@ const Home = ({username, email, password, setUsername, setEmail, setPassword}) =
     const fetchNotes = async () => {
         try {
             const token = localStorage.getItem("token"); // Retrieve the token from localStorage
-            const response = await fetch("http://localhost:3000/user/get-notes", {
+            const response = await fetch(`${url}/get-notes`, {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
@@ -85,7 +87,7 @@ const Home = ({username, email, password, setUsername, setEmail, setPassword}) =
     const handleDeleteNote = async (noteId) => {
         try{
             const token = localStorage.getItem("token");
-            const response = await fetch("http://localhost:3000/user/delete-note", {
+            const response = await fetch(`${url}/delete-note`, {
                 method: "DELETE",
                 headers: {
                     "Content-Type" : "application/json",
@@ -109,7 +111,7 @@ const Home = ({username, email, password, setUsername, setEmail, setPassword}) =
     const handleEditNote = async (updatedNote) => {
         try {
             const token = localStorage.getItem("token");
-            const response = await fetch("http://localhost:3000/user/update-note", {
+            const response = await fetch(`${url}/update-note`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
@@ -159,14 +161,41 @@ const Home = ({username, email, password, setUsername, setEmail, setPassword}) =
         }
         setOpenEditModel({ isShown: false, type: "add", data: null, index: null });
     };
+
+    const handleSearch = () => {
+        if (!searchQuery) {
+            return notes;
+        }
+        const filteredNotes = notes.filter((note) =>
+            note.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            note.content.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            note.tags.some((tag) =>
+                tag.toLowerCase().includes(searchQuery.toLowerCase())
+            )
+        );
+        return filteredNotes.sort((a, b) => b.isPinned - a.isPinned);
+    };
+    
+
     if(loading) return <div>Loading notes...</div>;
     if(error) return <div>Error: {error}</div>
 
     return (
         <div className="h-[100vh] flex">
-            <Navbar notes={notes} email={email} setEmail={setEmail} password={password} setPassword={setPassword} username={username} setUsername={setUsername} notesLength={notes.length} />
+            <Navbar 
+            notes={notes} 
+            email={email} 
+            setEmail={setEmail} 
+            password={password} 
+            setPassword={setPassword} 
+            username={username} 
+            setUsername={setUsername} 
+            notesLength={notes.length}
+            setSearchQuery={setSearchQuery}
+            handleSearch={handleSearch}
+            />
 
-            <div className="w-[100%] sm:p-10 sm:px-10 sm:mt-10 mt-16 pb-16 flex flex-col sm:flex-row sm:flex-wrap sm:justify-center justify-start sm:items-start items-center gap-x-16 overflow-y-auto">
+            {/* <div className="w-[100%] sm:p-10 sm:px-10 sm:mt-10 mt-16 pb-16 flex flex-col sm:flex-row sm:flex-wrap sm:justify-center justify-start sm:items-start items-center gap-x-16 overflow-y-auto">
                 {notes.length > 0 ? (
                     notes.map((note) => (
                         <NoteCard
@@ -183,6 +212,25 @@ const Home = ({username, email, password, setUsername, setEmail, setPassword}) =
                     ))
                 ) : (
                     <p>No notes added yet!</p>
+                )}
+            </div> */}
+            <div className="w-[100%] sm:p-10 sm:px-10 sm:mt-10 mt-16 pb-16 flex flex-col sm:flex-row sm:flex-wrap sm:justify-center justify-start sm:items-start items-center gap-x-16 overflow-y-auto">
+                {handleSearch().length > 0 ? (
+                    handleSearch().map((note) => (
+                        <NoteCard
+                            key={note._id}
+                            title={note.title}
+                            date={note.date}
+                            content={note.content}
+                            tags={note.tags}
+                            onDelete={() => handleDeleteNote(note._id)}
+                            onEdit={() => onEdit(note)}
+                            isPinnded={note.isPinned}
+                            handlePinNote={() => handlePinNote(note._id)}
+                        />
+                    ))
+                ) : (
+                    <p>No notes found!</p>
                 )}
             </div>
 

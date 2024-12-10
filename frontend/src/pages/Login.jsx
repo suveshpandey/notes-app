@@ -1,12 +1,17 @@
 import React, { useState } from 'react';
 import {Link, useNavigate} from 'react-router-dom';
 import PasswordInput from '../components/Passwordinput';
-import {validateEmail} from '../utils/helper.js';
+import {url, validateEmail} from '../utils/helper.js';
+import NavbarForSignupin from '../components/NavbarForSignupin.jsx';
+import LoadingBar from '../components/Loader.jsx';
 
 const Login = ({username, setUsername, email, setEmail, password, setPassword}) => {
     const [error, setError] = useState(null);
     const [newPassword, setNewPassword] = useState("");
     const [isForgotPass, setIsForgotPass] = useState(false);
+
+    const [loader, setLoader] = useState(false);
+    const [message, setMessage] = useState("");
 
     const navigate = useNavigate();
 
@@ -29,7 +34,7 @@ const Login = ({username, setUsername, email, setEmail, password, setPassword}) 
 
         // login api call
         try{
-            const response = await fetch("http://localhost:3000/user/signin", {
+            const response = await fetch(`${url}/signin`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -43,8 +48,13 @@ const Login = ({username, setUsername, email, setEmail, password, setPassword}) 
 
                 localStorage.setItem("username",data.username);
                 localStorage.setItem("email",data.email);
-                alert("Sign-in successful!");
-                navigate("/dashboard");
+                setMessage("Successfully Signed In!");
+                setLoader(true);
+                setTimeout(()=> {
+                    setLoader(false);
+                    navigate("/dashboard");
+                }, 3000);
+                
             }
             else{
                 setError(data.message || "Failed to sign-in.");
@@ -57,8 +67,10 @@ const Login = ({username, setUsername, email, setEmail, password, setPassword}) 
     }
     
     return (
-        <div className='h-[100%] w-[100%] flex items-center justify-center '>
-            <div className='h-auto w-[400px]  bg-opacity-20 rounded-md  border-[1px] border-[#748cab] border-opacity-200 '>
+        <div className="h-[100%] w-[100%] flex items-center justify-center  ">
+            <NavbarForSignupin />
+            {loader && <LoadingBar message={message} />}
+            <div className="h-auto w-[400px]  bg-opacity-20 rounded-md  border-[1px] border-[#748cab] border-opacity-200 ">
                 <form 
                 action=""
                 onSubmit={handleSubmit}
