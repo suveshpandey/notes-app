@@ -18,6 +18,6 @@ export const getFirstName = (name) => {
     return name.split(" ")[0];
 }
 
-export const url = "http://localhost:3000/user/";
+export const url = "https://neura-notes-backend.onrender.com/user/";
 
 // export default ;
