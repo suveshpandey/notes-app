@@ -1,5 +1,5 @@
 const express = require('express');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const nodemailer = require('nodemailer');
 const JWT_SECRET = process.env.JWT_SECRET;
@@ -221,7 +221,7 @@ userRouter.put('/change-password', async (req, res) => {
             JWT_SECRET,
             {expiresIn: '24h'}
         )
-        
+
         await user.save();
         res.status(200).json({message: "Password changed successfully.", token});
 
