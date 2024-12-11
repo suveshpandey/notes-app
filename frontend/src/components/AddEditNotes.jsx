@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import TagInput from './TagInput';
 
 import { RxCross2 } from "react-icons/rx";
+import { url } from '../utils/helper';
 
 const AddEditNotes = ({ onClose, onSave, initialData, fetchNotes }) => {
     const [title, setTitle] = useState("");
@@ -42,7 +43,7 @@ const AddEditNotes = ({ onClose, onSave, initialData, fetchNotes }) => {
         const method = initialData ? "PUT" : "POST";
 
         try{
-            const response = await fetch(`http://localhost:3000/user/${endpoint}`, {
+            const response = await fetch(`${url}${endpoint}`, {
                 method,
                 headers: {
                     "Content-Type" : "application/json",
