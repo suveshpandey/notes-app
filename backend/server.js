@@ -6,24 +6,10 @@ const { userRouter } = require('./routes/user');
 
 
 const app = express();
-
-const allowedOrigins = [
-    "http://localhost:5173", // Local development
-    "https://neura-notes-frontend.onrender.com", // Production frontend
-    "https://neura-notes-frontend.onrender.com"
-];
-
 const corsOptions = {
-    origin: function (origin, callback) {
-        // Allow requests with no origin (like mobile apps, Postman)
-        if (!origin || allowedOrigins.includes(origin)) {
-            callback(null, true);
-        } else {
-            callback(new Error("Not allowed by CORS"));
-        }
-    },
+    origin: "https://neura-notes-frontend.onrender.com",
     methods: "GET, POST, PUT, DELETE, PATCH, HEAD",
-    credentials: true // Allow cookies and credentials
+    credentials: true
 };
 app.use(cors(corsOptions));
 app.use(express.json());
