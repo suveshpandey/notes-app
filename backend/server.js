@@ -7,16 +7,17 @@ const { userRouter } = require('./routes/user');
 
 const app = express();
 
-// const corsOptions = {
-//     origin: "https://neura-notes-frontend.onrender.com",
-//     methods: "GET, POST, PUT, DELETE, PATCH, HEAD",
+// app.use(cors({
+//     origin: process.env.FRONTEND_URL || "http://localhost:5173",
+//     methods:['GET', 'POST', 'PUT', 'DELETE'],
 //     credentials: true
-// };
+// }));
 
+// CORS configuration to allow all origins
 app.use(cors({
-    origin: process.env.FRONTEND_URL || "http://localhost:5173/",
-    methods:['GET', 'POST', 'PUT', 'DELETE'],
-    credentials: true
+    origin: "*",  // Allow all origins
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    credentials: true // Allow cookies and credentials
 }));
 
 // app.use(cors(corsOptions));
