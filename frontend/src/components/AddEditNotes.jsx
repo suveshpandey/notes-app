@@ -63,7 +63,7 @@ const AddEditNotes = ({ onClose, onSave, initialData, fetchNotes }) => {
         }
         catch(error){
             console.log("Error while saving the note.", error.message);
-            alert(data.message || "An error occurred while saving the note.");
+            alert("An error occurred while saving the note.");
         }
     }
 
