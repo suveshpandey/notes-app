@@ -2,13 +2,16 @@ import React, { useEffect, useState } from 'react';
 import TagInput from './TagInput';
 
 import { RxCross2 } from "react-icons/rx";
-import { url } from '../utils/helper';
+// import { url } from '../utils/helper';
 
 const AddEditNotes = ({ onClose, onSave, initialData, fetchNotes }) => {
     const [title, setTitle] = useState("");
     const [content, setContent] = useState("");
     const [tags, setTags] = useState([]);
     const [date, setDate] = useState("");
+
+    const url = "https://neura-notes-backend.onrender.com";
+
 
     useEffect(() => {
         if (initialData) {
@@ -43,7 +46,7 @@ const AddEditNotes = ({ onClose, onSave, initialData, fetchNotes }) => {
         const method = initialData ? "PUT" : "POST";
 
         try{
-            const response = await fetch(`${url}/${endpoint}`, {
+            const response = await fetch(`${url}${endpoint}`, {
                 method,
                 headers: {
                     "Content-Type" : "application/json",
