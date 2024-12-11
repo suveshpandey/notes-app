@@ -70,7 +70,7 @@ const Login = ({username, setUsername, email, setEmail, password, setPassword}) 
         <div className="h-[100%] w-[100%] flex items-center justify-center  ">
             <NavbarForSignupin />
             {loader && <LoadingBar message={message} />}
-            <div className="h-auto w-[400px]  bg-opacity-20 rounded-md  border-[1px] border-[#748cab] border-opacity-200 ">
+            <div className="h-auto sm:w-[400px] w-[90%]  bg-opacity-20 rounded-md  border-[1px] border-[#748cab] border-opacity-200 ">
                 <form 
                 action=""
                 onSubmit={handleSubmit}

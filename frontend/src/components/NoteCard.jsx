@@ -16,8 +16,8 @@ const NoteCard = ({ title, date, content, tags, onEdit, onDelete, isPinnded, han
                 </div>
                 <div className="flex items-center justify-center">
                     {
-                        !isPinnded ? <PiPushPinSimpleFill className="text-blue-600 size-5 cursor-pointer" onClick={handlePinNote} />
-                        : <PiPushPinSimpleSlashFill className="text-blue-600 size-5 cursor-pointer" onClick={handlePinNote} />
+                        !isPinnded ? <PiPushPinSimpleFill className="text-blue-600 size-6 cursor-pointer" onClick={handlePinNote} />
+                        : <PiPushPinSimpleSlashFill className="text-blue-600 size-6 cursor-pointer" onClick={handlePinNote} />
                     }
                 </div>
             </div>

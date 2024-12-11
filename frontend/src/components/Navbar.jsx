@@ -107,7 +107,7 @@ const Navbar = ({notes, username, email, password, setEmail, setPassword, setUse
                         className='h-[30px] w-[30%] mt-10 text-white rounded-md flex justify-center items-center bg-gradient-to-r from-[#6d7293] to-[#7c98b3] transition-all duration-200 '>Logout <TbLogout className='ml-1' /> </button>
                     </div>
                     <div className='mt-auto flex justify-center items-center pb-4'>
-                        <p className="text-sm text-gray-500">Designed and developed by <span className='text-blue-500'>"Suvesh Pandey" </span></p>
+                        <p className="text-sm text-center text-gray-500">Designed and developed by <br /><span className='text-blue-500 text-center'>"Suvesh Pandey" </span></p>
                     </div>
                 </div>
             </Modal>
