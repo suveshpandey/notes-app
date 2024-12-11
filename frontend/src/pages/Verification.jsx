@@ -24,7 +24,7 @@ const Verification = () => {
         setError("");
 
         try{
-            const response = await fetch(`${url}/verify-user`, {
+            const response = await fetch(`${url}verify-user`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"

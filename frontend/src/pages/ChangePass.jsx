@@ -23,7 +23,7 @@ const ChangePass = ({email, setEmail, password, setPassword}) => {
         setError("");
 
         try{
-            const response = await fetch(`${url}/change-password`, {
+            const response = await fetch(`${url}change-password`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json"

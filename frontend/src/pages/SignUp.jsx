@@ -32,7 +32,7 @@ const Signup = ({username, setUsername, email, setEmail, password, setPassword})
         
         //sign-up api call
         try{
-            const response = await fetch(`${url}/signup`, {
+            const response = await fetch(`${url}signup`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
