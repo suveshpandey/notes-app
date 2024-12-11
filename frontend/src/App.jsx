@@ -32,7 +32,7 @@ import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 
 import Home from './pages/Home'
-import Signup from './pages/Signup';
+import Signup from './pages/SignUp';
 import Login from './pages/Login';
 import Verification from './pages/Verification';
 import ChangePass from './pages/ChangePass';
@@ -45,7 +45,7 @@ const App = () => {
         <div className="h-[100vh]">
             <Router>
                 <Routes>
-                    <Route path="/" element={<Navigate to="signup" />} />
+                    <Route path="/" element={<Navigate to="/signup" />} />
                     <Route path="/dashboard" element={<Home username={username} setUsername={setUsername} email={email} setEmail={setEmail} password={password} setPassword={setPassword} />} />
                     <Route path="/signup" element={<Signup username={username} setUsername={setUsername} email={email} setEmail={setEmail} password={password} setPassword={setPassword} />} />
                     <Route path="/verification" element={<Verification />} />
