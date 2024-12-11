@@ -177,7 +177,7 @@ const Home = ({username, email, password, setUsername, setEmail, setPassword}) =
     };
     
 
-    if(loading) return <div>Loading notes...</div>;
+    if(loading) return <div className='h-[100vh] w-[100%] pt-16 flex justify-center items center '>Loading notes...</div>;
     if(error) return <div>Error: {error}</div>
 
     return (

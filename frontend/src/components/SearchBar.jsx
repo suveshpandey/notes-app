@@ -5,7 +5,7 @@ import { RxCross2 } from "react-icons/rx";
 
 const SearchBar = ({value, onChange, handleSearch, onClearSearch}) => {
     return (
-        <div className='md:w-[50%] lg:w-[30%] sm:h-[80%] h-[70%] flex items-center rounded-md  px-2 text-[#1d2d44] text-opacity-70 border-[1px] bg-white  '>
+        <div className='md:w-[50%] lg:w-[30%] w-[170px] sm:h-[80%] h-[70%] flex items-center rounded-md  px-2 text-[#1d2d44] text-opacity-70 border-[1px] bg-white  '>
             <input 
             type="text"
             placeholder='Search Notes'

@@ -4,15 +4,17 @@ export const validateEmail = (email) => {
 }
 
 export const getInitials = (name) => {
-    if(!name) return "";
-    const words = name.split(" ");
-    let initials = "";
+    if (!name) return ""; // Handle empty or undefined name
 
-    for(let i = 0; i<words.length; i++){
-        initials += words[i][0];
-    }
-    return initials;
-}
+    // Split name into words, filter out empty strings, and map to initials
+    const initials = name
+        .trim()
+        .split(/\s+/) // Split by one or more spaces
+        .map(word => word[0]?.toUpperCase()) // Get the first character of each word and convert to uppercase
+        .join(""); // Join all initials into a single string
+
+    return initials || ""; // Fallback to empty string if no initials are generated
+};
 
 export const getFirstName = (name) => {
     return name.split(" ")[0];

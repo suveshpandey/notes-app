@@ -45,7 +45,7 @@ const Login = ({username, setUsername, email, setEmail, password, setPassword}) 
             if(response.ok && data.token){
                 setUsername(data.username);
                 localStorage.setItem("token",data.token);
-
+                console.log(data.username)
                 localStorage.setItem("username",data.username);
                 localStorage.setItem("email",data.email);
                 setMessage("Successfully Signed In!");
