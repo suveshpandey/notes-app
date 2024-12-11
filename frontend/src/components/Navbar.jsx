@@ -52,7 +52,7 @@ const Navbar = ({notes, username, email, password, setEmail, setPassword, setUse
         <div>
             <div className='bg-[#eaf4f4] w-[100%] h-[50px] fixed flex items-center justify-between sm:px-20 px-2 py-1 top-0 z-10 '>
                 <div className='flex justify-center items-center font-bold text-lg bg-gradient-to-r from-[#1d2d44] to-[#3e5c76] bg-clip-text text-transparent  '>
-                    <img className='size-6 mr-1' src="/notes-icon.png" alt="" />
+                    <img className='sm:size-6 size-5 mr-1' src="/notes-icon.png" alt="" />
                     <p>NeuraNotes</p>
                 </div>
                 
@@ -81,7 +81,7 @@ const Navbar = ({notes, username, email, password, setEmail, setPassword, setUse
                     backgroundColor: "rgba(0, 0, 0, 0.5)",
                 },
             }}
-            className={"lg:w-[40%] w-[95%] sm:h-3/4 h-3/5 mx-auto  mt-16 bg-[#eef4ed] rounded-md p-6  transition-all duration-200"}
+            className={"lg:w-[40%] w-[95%] sm:h-3/4 h-[80vh] mx-auto  mt-16 bg-[#eef4ed] rounded-md p-6  transition-all duration-200"}
             >
                 <div className='flex flex-col relative h-full'>
                     <button
