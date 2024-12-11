@@ -34,7 +34,7 @@ const Login = ({username, setUsername, email, setEmail, password, setPassword}) 
 
         // login api call
         try{
-            const response = await fetch("https://neura-notes-backend.onrender.com/user/signin", {
+            const response = await fetch(`${url}/signin`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
