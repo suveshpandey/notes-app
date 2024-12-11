@@ -42,7 +42,7 @@ const AddEditNotes = ({ onClose, onSave, initialData, fetchNotes }) => {
             date: new Date().toLocaleDateString(),
         };
 
-        const endpoint = initialData ? "/update-note" : "/add-new-note";
+        const endpoint = initialData ? "/user/update-note" : "/user/add-new-note";
         const method = initialData ? "PUT" : "POST";
 
         try{
