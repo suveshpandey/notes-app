@@ -9,7 +9,8 @@ const app = express();
 
 const allowedOrigins = [
     "http://localhost:5173", // Local development
-    "https://neura-notes-frontend.onrender.com" // Production frontend
+    "https://neura-notes-frontend.onrender.com", // Production frontend
+    "https://neura-notes-frontend.onrender.com"
 ];
 
 const corsOptions = {

@@ -85,7 +85,7 @@ userRouter.post('/verify-user', async (req, res) => {
 //         res.status(500).json({message: "Error occured while signing-in", error: error.message});
 //     }
 // })
-userRouter.post('/signin', async (req, res) => {
+userRouter.post('signin', async (req, res) => {
     const {email, password} = req.body;
     try{
         const user = await userModel.findOne({email});
