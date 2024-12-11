@@ -50,7 +50,7 @@ const TagInput = ({ tags = [], setTags }) => {
                 value={inputValue}
                 onChange={handleInputChange}
                 onKeyDown={handleKeyDown}
-                className='px-2 py-1 h-[30px] w-[200px] my-1 rounded-sm border-[1px] border-slate-400 border-opacity-40 outline-none text-[#1d2d44] '
+                className='px-2 py-1 h-[30px] w-[200px] max-w-fit my-1 rounded-sm border-[1px] border-slate-400 border-opacity-40 outline-none text-[#1d2d44] '
                 />
                 <button
                 onClick={() => {addNewTag()}}

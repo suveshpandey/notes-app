@@ -47,11 +47,11 @@ const NoteCard = ({ title, date, content, tags, onEdit, onDelete, isPinnded, han
                     <div className="flex">
                         <RiEdit2Fill
                             onClick={onEdit}
-                            className="text-[#8d99ae] size-5 mr-[8px] cursor-pointer"
+                            className="text-[#8d99ae] size-6 mr-[8px] cursor-pointer"
                         />
                         <MdDelete
                             onClick={onDelete}
-                            className="text-[#ff758f] size-5 cursor-pointer"
+                            className="text-[#ff758f] size-6 cursor-pointer"
                         />
                     </div>
                 </div>
