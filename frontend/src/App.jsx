@@ -45,7 +45,7 @@ const App = () => {
         <div className="h-[100vh]">
             <Router>
                 <Routes>
-                    <Route path="/" element={<Navigate to="/signup" />} />
+                    <Route path="/" element={<Navigate to="signup" />} />
                     <Route path="/dashboard" element={<Home username={username} setUsername={setUsername} email={email} setEmail={setEmail} password={password} setPassword={setPassword} />} />
                     <Route path="/signup" element={<Signup username={username} setUsername={setUsername} email={email} setEmail={setEmail} password={password} setPassword={setPassword} />} />
                     <Route path="/verification" element={<Verification />} />
