@@ -43,7 +43,7 @@ const AddEditNotes = ({ onClose, onSave, initialData, fetchNotes }) => {
         const method = initialData ? "PUT" : "POST";
 
         try{
-            const response = await fetch(`${url}${endpoint}`, {
+            const response = await fetch(`${url}/${endpoint}`, {
                 method,
                 headers: {
                     "Content-Type" : "application/json",
