@@ -98,7 +98,7 @@ const AddEditNotes = ({ onClose, onSave, initialData, fetchNotes }) => {
                         type="text"
                         value={title}
                         onChange={(e) => setTitle(e.target.value)}
-                        placeholder='Go To GYM'
+                        placeholder='Note title goes here...'
                         className='h-10 rounded-sm outline-none px-4 text-lg text-[#1d2d44] border-[1px] border-slate-500 border-opacity-20 hover:border-opacity-40 transition-all duration-200'
                     />
                 </div>
@@ -111,7 +111,7 @@ const AddEditNotes = ({ onClose, onSave, initialData, fetchNotes }) => {
                         value={content}
                         onChange={(e) => setContent(e.target.value)}
                         className='rounded-sm outline-none px-4 text-lg text-[#1d2d44] border-[1px] border-slate-500 border-opacity-20 hover:border-opacity-40 transition-all duration-200'
-                        placeholder='Complete 50 dumbbell presses.'
+                        placeholder='Enter your notes and explanations here...'
                         rows={10}
                     ></textarea>
                 </div>

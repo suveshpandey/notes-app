@@ -46,7 +46,7 @@ const TagInput = ({ tags = [], setTags }) => {
             <div className='flex items-center space-x-1 mb-2'>
                 <input
                 type="text" 
-                placeholder='#meeting'
+                placeholder='#webdev'
                 value={inputValue}
                 onChange={handleInputChange}
                 onKeyDown={handleKeyDown}
