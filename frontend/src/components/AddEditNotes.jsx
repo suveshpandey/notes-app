@@ -104,7 +104,7 @@ const AddEditNotes = ({ onClose, onSave, initialData, fetchNotes }) => {
                 </div>
                 {/* content-input */}
                 <div className='flex flex-col'>
-                    <label htmlFor="" className='text-lg text-slate-400 font-semibold'>Content</label>
+                    <label htmlFor="" className='text-lg text-slate-400 mt-2 font-semibold'>Content</label>
                     <textarea
                         name=""
                         id=""
@@ -117,13 +117,13 @@ const AddEditNotes = ({ onClose, onSave, initialData, fetchNotes }) => {
                 </div>
                 {/* file-input */}
                 <div className='flex flex-col'>
-                    <label className='text-lg mt-1  text-slate-400 font-semibold'>File</label>
-                    <div className='relative flex items-center rounded-sm outline-none py-1 px-1 text-lg text-[#1d2d44] border-[1px] border-slate-500 border-opacity-20 hover:border-opacity-40 transition-all duration-200'>
+                    <label className='text-lg mt-3  text-slate-400 font-semibold'>File</label>
+                    <div className='relative flex  items-center rounded-sm outline-none py-1 px-1 text-lg text-[#1d2d44] border-[1px] border-slate-500 border-opacity-20 hover:border-opacity-40 transition-all duration-200'>
                         <input
                             type="file"
                             id='fileInput'
                             onChange={handleFileChange}
-                            className=''
+                            className='w-[250px] '
                         />
                         <button 
                         onClick={handleDeleteFile}
@@ -133,8 +133,10 @@ const AddEditNotes = ({ onClose, onSave, initialData, fetchNotes }) => {
                     </div>
                 </div>
                 {/* tags-input */}
-                <label htmlFor="" className='text-lg text-slate-400 font-semibold'>Tags</label>
-                <TagInput tags={tags} setTags={setTags} />
+                <div className='flex flex-col'>
+                    <label htmlFor="" className='text-lg mt-3 text-slate-400 font-semibold'>Tags</label>
+                    <TagInput tags={tags} setTags={setTags} />
+                </div>
                 {/* add-button */}
                 <button
                     onClick={handleSave}

@@ -43,7 +43,7 @@ const Signup = ({username, setUsername, email, setEmail, password, setPassword})
             });
             if(response.ok){
                 console.log("response: ", response);
-                setMessage("A verification code is sent to you email.");
+                setMessage("A verification code is sent to your email.");
                 setLoader(true);
                 setTimeout(() => {
                     setLoader(false);

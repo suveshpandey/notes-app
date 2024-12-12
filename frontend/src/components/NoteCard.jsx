@@ -85,7 +85,7 @@ const NoteCard = ({ title, date, content, tags, file, onEdit, onDelete, isPinnde
     
 
     return (
-        <div className={`sm:w-[400px] w-[90%] ${file ? `h-[500px]` : 'h-[200px]'} flex flex-col bg-green-100 bg-opacity-20 p-3 rounded-md border-[1px] border-slate-300 shadow-sm hover:shadow-md hover:border-slate-400 transition-all duration-200 mb-5`}>
+        <div className={`sm:w-[400px] w-[90%] ${file ? `h-auto` : 'h-[200px]'} flex flex-col bg-green-100 bg-opacity-20 p-3 rounded-md border-[1px] border-slate-300 shadow-sm hover:shadow-md hover:border-slate-400 transition-all duration-200 mb-5`}>
             {/* Header Section */}
             <div className="flex justify-between">
                 <div>
