@@ -20,6 +20,7 @@ const Home = ({username, email, password, setUsername, setEmail, setPassword}) =
         data: null,
         index: null,
     });
+    // const url = "http://localhost:3000/user";
     const handlePinNote = async (noteId) => {
         try{
             const token = localStorage.getItem("token");
@@ -177,7 +178,7 @@ const Home = ({username, email, password, setUsername, setEmail, setPassword}) =
     };
     
 
-    if(loading) return <div className='h-[100vh] w-[100%] pt-16 flex justify-center items center '>Loading notes...</div>;
+    if(loading) return <div className='h-[100vh] w-[100%] pt-16 flex justify-center items center '>Fetching data, please wait...</div>;
     if(error) return <div>Error: {error}</div>
 
     return (
@@ -223,6 +224,7 @@ const Home = ({username, email, password, setUsername, setEmail, setPassword}) =
                             date={note.date}
                             content={note.content}
                             tags={note.tags}
+                            file={note.file}
                             onDelete={() => handleDeleteNote(note._id)}
                             onEdit={() => onEdit(note)}
                             isPinnded={note.isPinned}

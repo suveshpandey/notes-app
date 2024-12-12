@@ -38,7 +38,8 @@ const noteSchema = new Schema({
         reqired: true
     },
     userId: {type: ObjectId},
-    isPinned: {type: Boolean, default: false}
+    isPinned: {type: Boolean, default: false},
+    file: {type: String} //store base64 encoded data.
 })
 
 const userModel = mongoose.model('user', userSchema);

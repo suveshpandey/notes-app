@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import TagInput from './TagInput';
 
 import { RxCross2 } from "react-icons/rx";
+
 // import { url } from '../utils/helper';
 
 const AddEditNotes = ({ onClose, onSave, initialData, fetchNotes }) => {
@@ -9,8 +10,10 @@ const AddEditNotes = ({ onClose, onSave, initialData, fetchNotes }) => {
     const [content, setContent] = useState("");
     const [tags, setTags] = useState([]);
     const [date, setDate] = useState("");
+    const [file, setFile] = useState(null);
 
     const url = "https://neura-notes-backend.onrender.com";
+    // const url = "http://localhost:3000";
 
 
     useEffect(() => {
@@ -28,19 +31,29 @@ const AddEditNotes = ({ onClose, onSave, initialData, fetchNotes }) => {
         }
     }, [initialData]);
     
-    
+    const handleFileChange = (e) => {
+        setFile(e.target.files[0]);
+    }
+    const handleDeleteFile = () => {
+        console.log("deleteFile clicked")
+        setFile(null);
+        document.getElementById('fileInput').value = '';
+    }
     // Save handler
     const handleSave = async () => {
         if(!title || !content){
             alert("Title and content cannot be empty");
             return;
         }
-        const noteData = {
-            title,
-            content,
-            tags: Array.isArray(tags) ? tags : [],
-            date: new Date().toLocaleDateString(),
-        };
+        const formData = new FormData();
+        initialData && formData.append("noteId", initialData._id);
+        formData.append("title", title),
+        formData.append("content", content),
+        formData.append("tags", (Array.isArray(tags) ? tags : []));
+        formData.append("date", new Date().toLocaleDateString());
+        if(file){
+            formData.append("file", file);
+        }
 
         const endpoint = initialData ? "/user/update-note" : "/user/add-new-note";
         const method = initialData ? "PUT" : "POST";
@@ -49,12 +62,9 @@ const AddEditNotes = ({ onClose, onSave, initialData, fetchNotes }) => {
             const response = await fetch(`${url}${endpoint}`, {
                 method,
                 headers: {
-                    "Content-Type" : "application/json",
                     token: localStorage.getItem("token"),
                 },
-                body: JSON.stringify(
-                    initialData ? {noteId: initialData._id, ...noteData} : noteData
-                ),
+                body: formData,
             });
             const data = await response.json();
             if(response.ok){
@@ -105,6 +115,23 @@ const AddEditNotes = ({ onClose, onSave, initialData, fetchNotes }) => {
                         rows={10}
                     ></textarea>
                 </div>
+                {/* file-input */}
+                <div className='flex flex-col'>
+                    <label className='text-lg mt-1  text-slate-400 font-semibold'>File</label>
+                    <div className='relative flex items-center rounded-sm outline-none py-1 px-1 text-lg text-[#1d2d44] border-[1px] border-slate-500 border-opacity-20 hover:border-opacity-40 transition-all duration-200'>
+                        <input
+                            type="file"
+                            id='fileInput'
+                            onChange={handleFileChange}
+                            className=''
+                        />
+                        <button 
+                        onClick={handleDeleteFile}
+                        className='absolute right-3'>
+                            <RxCross2 className='text-slate-500 hover:text-red-400 transition-all duration-300' />
+                        </button>
+                    </div>
+                </div>
                 {/* tags-input */}
                 <label htmlFor="" className='text-lg text-slate-400 font-semibold'>Tags</label>
                 <TagInput tags={tags} setTags={setTags} />
@@ -120,3 +147,4 @@ const AddEditNotes = ({ onClose, onSave, initialData, fetchNotes }) => {
 };
 
 export default AddEditNotes;
+

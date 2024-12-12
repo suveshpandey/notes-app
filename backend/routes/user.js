@@ -2,6 +2,8 @@ const express = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const nodemailer = require('nodemailer');
+const multer = require('multer');
+
 const JWT_SECRET = process.env.JWT_SECRET;
 const { userModel, noteModel } = require('../database/db');
 const { signUpAuth } = require('../middleWares/signUpMiddleWare');
@@ -10,6 +12,18 @@ const sendVerificationCode = require('../middleWares/email.js');
 
 const Router = express.Router;
 const userRouter = Router();
+
+// const storage = multer.diskStorage({
+//     destination: (req, file, cb) => {
+//         cb(null, 'uploads/');
+//     },
+//     filename: (req, file, cb) => {
+//         const suffix = Date.now();
+//         cb(null, suffix + '-' + file.originalname);
+//     }
+// });
+const storage = multer.memoryStorage(); //cpnfigure multer to store files in memory as buffer.
+const upload = multer({storage});
 
 userRouter.post('/signup', signUpAuth, async (req, res) => {
     const {email, password, username} = req.body;
@@ -59,32 +73,6 @@ userRouter.post('/verify-user', async (req, res) => {
         res.status(500).json({ message: "Error verifying user.", error: error.message });
     }
 });
-// userRouter.post('/signin', async (req, res) => {
-//     const {email, password} = req.body;
-//     try{
-//         const user = await userModel.findOne({email});
-//         if(user && await bcrypt.compare(password, user.password)){
-//             const token = jwt.sign(
-//                 {id: user._id},
-//                 JWT_SECRET,
-//                 {expiresIn: '24h'}
-//             )
-//             console.log("token: ", token);
-//             return res.status(200).json({
-//                 message: "User successfully signed-in", 
-//                 email: email,
-//                 username: user.username,
-//                 token: token
-//             });
-//         }
-//         else{
-//             return res.status(401).json({message: "Wrong credentials"});
-//         }
-//     }
-//     catch(error){
-//         res.status(500).json({message: "Error occured while signing-in", error: error.message});
-//     }
-// })
 userRouter.post('/signin', async (req, res) => {
     const {email, password} = req.body;
     try{
@@ -117,11 +105,37 @@ userRouter.post('/signin', async (req, res) => {
         res.status(500).json({message: "Error occured while signing-in", error: error.message});
     }
 })
-userRouter.post('/add-new-note', authenticate, async (req, res) => {
+// userRouter.post('/add-new-note', authenticate, async (req, res) => {
+//     const {title, content, date, tags} = req.body;
+//     try{
+//         const newNote = await noteModel({
+//             title, content, date, tags, userId: req.userId                                                                                                                                                                                                  
+//         })
+//         console.log(newNote);
+//         newNote.save();
+
+//         res.status(201).json({message: "Note successfully created.", newNote});
+//     }
+//     catch(error){
+//         res.status(500).json({
+//             message: "Error occured while creating new note.", 
+//             error: error.message
+//         });
+//     }
+// })
+userRouter.post('/add-new-note', authenticate, upload.single('file'), async (req, res) => {
     const {title, content, date, tags} = req.body;
+    // const filePath = req.file ? req.file.path : null;
+    const fileBase64 = req.file ? req.file.buffer.toString('base64') : null;
+
     try{
         const newNote = await noteModel({
-            title, content, date, tags, userId: req.userId                                                                                                                                                                                                  
+            title,
+            content, 
+            date, 
+            tags, 
+            file: fileBase64,
+            userId: req.userId                                                                                                                                                                                                  
         })
         console.log(newNote);
         newNote.save();
@@ -135,18 +149,45 @@ userRouter.post('/add-new-note', authenticate, async (req, res) => {
         });
     }
 })
+// userRouter.get('/get-notes', authenticate, async (req, res) => {
+//     try{
+//         const userNotes = await noteModel.find({userId: req.userId});
+//         res.status(200).json({notes: userNotes});
+//     }
+//     catch(error){
+//         res.status(500).json({
+//             message: "Error while fetching notes.",
+//             error: error.message
+//         });
+//     }
+// })
 userRouter.get('/get-notes', authenticate, async (req, res) => {
-    try{
-        const userNotes = await noteModel.find({userId: req.userId});
-        res.status(200).json({notes: userNotes});
-    }
-    catch(error){
+    try {
+        // Fetch all notes for the authenticated user
+        const userNotes = await noteModel.find({ userId: req.userId });
+
+        if (!userNotes) {
+            return res.status(404).json({
+                message: "No notes found."
+            });
+        }
+
+        // Send back the notes along with the file data (if any)
+        const notesWithFiles = userNotes.map(note => ({
+            ...note.toObject(),
+            file: note.file  // Assuming the file is stored as Base64
+        }));
+
+        res.status(200).json({ notes: notesWithFiles });
+    } catch (error) {
+        console.error(error);
         res.status(500).json({
             message: "Error while fetching notes.",
             error: error.message
         });
     }
-})
+});
+
 userRouter.delete('/delete-note', authenticate, async (req, res) => {
     const noteId = req.body.noteId;
     try{
@@ -162,7 +203,40 @@ userRouter.delete('/delete-note', authenticate, async (req, res) => {
         })
     }
 })
-userRouter.put('/update-note', authenticate, async (req, res) => {
+// userRouter.put('/update-note', authenticate, async (req, res) => {
+//     console.log("req body recieved->", req.body)
+//     const { noteId, title, content, tags } = req.body;
+
+//     if (!noteId || !title || !content) {
+//         return res.status(400).json({ message: "Note ID, title, and content are required." });
+//     }
+
+//     try {
+//         const updatedNote = await noteModel.findByIdAndUpdate(
+//             noteId,
+//             { title, content, tags },
+//             { new: true } // Return the updated note
+//         );
+
+//         if (!updatedNote) {
+//             console.log("Note not found with ID:", noteId);
+//             return res.status(404).json({ message: "Note not found" });
+//         }
+
+//         console.log("Updated Note:", updatedNote); // Log the updated note
+//         res.status(200).json(updatedNote);
+//     } 
+//     catch (error) {
+//         console.error("Error updating note:", error.message); // Log the error
+//         res.status(500).json({
+//             message: "Some error occurred while updating the note.",
+//             error: error.message
+//         });
+//     }
+// });
+userRouter.put('/update-note', authenticate, upload.single('file'), async (req, res) => {
+    console.log("Request body received:", req.body); // Log the incoming request body
+
     const { noteId, title, content, tags } = req.body;
 
     if (!noteId || !title || !content) {
@@ -183,8 +257,7 @@ userRouter.put('/update-note', authenticate, async (req, res) => {
 
         console.log("Updated Note:", updatedNote); // Log the updated note
         res.status(200).json(updatedNote);
-    } 
-    catch (error) {
+    } catch (error) {
         console.error("Error updating note:", error.message); // Log the error
         res.status(500).json({
             message: "Some error occurred while updating the note.",
@@ -192,6 +265,8 @@ userRouter.put('/update-note', authenticate, async (req, res) => {
         });
     }
 });
+
+
 userRouter.put('/pin-note', authenticate, async (req, res) => {
     const {noteId} = req.body;
     try{
